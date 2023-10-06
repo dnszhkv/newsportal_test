@@ -1,0 +1,24 @@
+<!--  Наследуюсь от шаблона default.html, который создаю для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+<!-- Подключаю файл с фильтром -->
+{% load custom_filters %}
+
+<!-- Название будет New -->
+{% block title %}
+New
+{% endblock title %}
+
+<!-- В контенте на странице вывожу сам пост, идентификатор которого был передан в url -->
+{% block content %}
+    <h1>{{ new.title|censor }}</h1>
+    <h3>{{ new.time_in|date:'d.m.Y' }}</h3>
+
+    <hr>
+    {% if new %}
+        <p style="text-align: left;">{{ new.text|linebreaksbr }}</p>
+    {% else %}
+        <h2>Поста больше не существует!</h2>
+    {% endif %}
+    <hr>
+{% endblock content %}
