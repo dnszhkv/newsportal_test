@@ -24,4 +24,6 @@ urlpatterns = [
    # подключались к главному приложению с префиксом posts/.
    path('news/', include('news.urls')),
    path('articles/', include('news.urls_articles')),
+   path('accounts/', include('allauth.urls')),
+   path('', include('accounts.urls')),
 ]

@@ -1,6 +1,8 @@
 # Импортирую класс, который говорит о том, что в этом представлении будет выводиться список объектов из БД
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .models import Post
 from .filters import PostFilter
@@ -53,7 +55,7 @@ class PostDetail(DetailView):
 
 
 # Создание новости
-class NewCreate(CreateView):
+class NewCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     # Указываю разработанную форму,
     form_class = PostForm
     # модель постов
@@ -62,6 +64,8 @@ class NewCreate(CreateView):
     template_name = 'new_edit.html'
     # и задаю страницу для перехода после выполнения операции
     success_url = reverse_lazy('post_list')
+    # добавляю проверку прав доступа
+    permission_required = 'news.add_post'
 
     def form_valid(self, form):
         post = form.save(commit=False)
@@ -70,10 +74,11 @@ class NewCreate(CreateView):
 
 
 # Изменение новости
-class NewUpdate(UpdateView):
+class NewUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     success_url = reverse_lazy('post_list')
+    permission_required = 'news.change_post'
 
     def get_template_names(self):
         post = self.get_object()
@@ -88,9 +93,10 @@ class NewUpdate(UpdateView):
 
 
 # Удаление новости
-class NewDelete(DeleteView):
+class NewDelete(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('post_list')
+    permission_required = 'news.delete_post'
 
     def get_template_names(self):
         post = self.get_object()
@@ -100,10 +106,11 @@ class NewDelete(DeleteView):
 
 
 # Создание статьи
-class ArticleCreate(CreateView):
+class ArticleCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     form_class = PostForm
     template_name = 'article_edit.html'
     success_url = reverse_lazy('post_list')
+    permission_required = 'news.add_post'
 
     def form_valid(self, form):
         post = form.save(commit=False)
@@ -112,10 +119,11 @@ class ArticleCreate(CreateView):
 
 
 # Редактирование статьи
-class ArticleUpdate(UpdateView):
+class ArticleUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     success_url = reverse_lazy('post_list')
+    permission_required = 'news.change_post'
 
     def get_template_names(self):
         post = self.get_object()
@@ -130,9 +138,10 @@ class ArticleUpdate(UpdateView):
 
 
 # Удаление статьи
-class ArticleDelete(DeleteView):
+class ArticleDelete(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
     model = Post
     success_url = reverse_lazy('post_list')
+    permission_required = 'news.delete_post'
 
     def get_template_names(self):
         post = self.get_object()

@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth.views import LoginView
 # Импортирую представления
 from .views import PostList, PostDetail, PostSearch, NewCreate, NewUpdate, NewDelete
 
