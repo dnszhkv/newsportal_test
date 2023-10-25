@@ -12,13 +12,20 @@ New
 <!-- В контенте на странице вывожу сам пост, идентификатор которого был передан в url -->
 {% block content %}
     <h1>{{ new.title|censor }}</h1>
-    <h3>{{ new.time_in|date:'d.m.Y' }}</h3>
+
+    <p style="text-align: left;" class="details">
+        Автор: <span class="author">{{new.author}}</span>;
+        дата публикации: <span class="date">{{new.time_in|date:'d.m.Y'}}</span>;
+        категории:
+        {% for c in new.category.values %}
+        <a href="{% url 'category' c.id %}" class="category">{{c.name}}</a>
+        {% endfor %}
+    </p>
 
     <hr>
     {% if new %}
-        <p style="text-align: left;">{{ new.text|linebreaksbr }}</p>
-    {% else %}
-        <h2>Поста больше не существует!</h2>
+        <p style="text-align: left;">{{new.text|linebreaksbr}}</p>
     {% endif %}
     <hr>
+
 {% endblock content %}

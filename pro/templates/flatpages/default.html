@@ -9,13 +9,21 @@
 
         {% load static %}
         <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<!--        <link href="{% static 'css/styles.css' %}" rel="stylesheet" />-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Подключаю jQuery (обязательно до Bootstrap.js) -->
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+        <!-- Подключаю Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js"></script>
+
     </head>
     <body>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
            <div class="container">
-               <a class="navbar-brand" href="#">News Portal Ultimate</a>
+               <a class="navbar-brand" href="{% url 'post_list' %}">News Portal Ultimate!</a>
                <button class="navbar-toggler" type="button" data-toggle="collapse"
                        data-target="#navbarResponsive"
                        aria-controls="navbarResponsive" aria-expanded="false"
@@ -25,10 +33,16 @@
                <div class="collapse navbar-collapse" id="navbarResponsive">
                    <ul class="navbar-nav ml-auto">
                        <li class="nav-item active">
-                           <a class="nav-link" href="#">Home
-                               <span class="sr-only">(current)</span>
-                           </a>
+                           <a class="nav-link" href="{% url 'search' %}">Поиск</a>
                        </li>
+                       <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="createDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Создать
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="createDropdown">
+                            <a class="dropdown-item" href="{% url 'new_create' %}">Новость</a>
+                            <a class="dropdown-item" href="{% url 'article_create' %}">Статью</a>
+                        </div>
                    </ul>
                </div>
            </div>

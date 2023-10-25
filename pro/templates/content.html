@@ -1,0 +1,53 @@
+<!-- Подключаю файл с фильтром -->
+{% load custom_filters %}
+<!-- Подключаю файл с тегом -->
+{% load custom_tags %}
+
+{% if news %}
+    <ul> <!-- Вывод постов списком -->
+        {% for new in news|dictsortreversed:"time_in" %}
+        <li>
+            <h3 style="text-align: left;">
+                <a href="{% url 'new' new.id %}">
+                    {{new.title|censor}}
+                </a>
+            </h3>
+            <p style="text-align: left;" class="details">
+                Автор: <span class="author">{{new.author}}</span>;
+                дата публикации: <span class="date">{{new.time_in|date:'d.m.Y'}}</span>;
+                категории:
+                {% for c in new.category.values %}
+                <a href="{% url 'category' c.id %}" class="category">{{c.name}}</a>
+                {% endfor %}
+            </p>
+            <p style="text-align: left;">{{new.text|censor|truncatewords:20}}</p>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {# Добавляю пагинацию на страницу #}
+
+    {# Информация о предыдущих страницах #}
+    {% if page_obj.has_previous %}
+        {# Для каждой ссылки пагинации указываю обработку через новый тег #}
+        <a href="?{% url_replace page=1 %}">1</a>
+        {% if page_obj.previous_page_number != 1 %}
+            ...
+            <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
+        {% endif %}
+    {% endif %}
+
+    {# Информация о текущей странице #}
+    {{ page_obj.number }}
+
+    {# Информация о следующих страницах #}
+    {% if page_obj.has_next %}
+        <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
+        {% if paginator.num_pages != page_obj.next_page_number %}
+            ...
+            <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
+        {% endif %}
+    {% endif %}
+{% else %}
+    <h2>Постов нет!</h2>
+{% endif %}

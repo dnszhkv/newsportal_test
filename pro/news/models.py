@@ -47,6 +47,13 @@ class Author(models.Model):
 # Модель Category представляет собой категории постов
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=255)  # Уникальное имя категории
+    subscribers = models.ManyToManyField(User, blank=True)
+
+    def subscribe(self):
+        pass
+
+    def get_category(self):
+        return self.name
 
     # Метод для отображения информации о постах на сайте
     def __str__(self):

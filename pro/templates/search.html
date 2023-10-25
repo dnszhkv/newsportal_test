@@ -1,11 +1,6 @@
 <!--  Наследуюсь от шаблона default.html, который создаю для flatpages -->
 {% extends 'flatpages/default.html' %}
 
-<!-- Подключаю файл с фильтром -->
-{% load custom_filters %}
-<!-- Подключаю файл с тегом -->
-{% load custom_tags %}
-
 <!-- Название будет Search -->
 {% block title %}
 Search
@@ -13,11 +8,12 @@ Search
 
 <!-- В контенте на странице вывожу поля для поиска -->
 {% block content %}
+
     <h1>Поиск новостей и статей</h1>
     {% if empty_filter %}
         <h4>Найдено: 0</h4>
     {% else %}
-        <h4>Найдено: {{ paginator.count }}</h4>
+        <h4>Найдено: {{paginator.count}}</h4>
     {% endif %}
 
     <form method="get" action="">
@@ -30,43 +26,7 @@ Search
         {# Сообщение по-умолчанию #}
         <h2>Задайте параметры поиска</h2>
     {% else %}
-        {% if news %}
-            <ul>
-                {% for new in news|dictsortreversed:"time_in" %}
-                <li>
-                    <h3 style="text-align: left;">{{ new.title|censor }}</h3>
-                    <p style="text-align: left;">{{ new.time_in|date:'d.m.Y' }}</p>
-                    <p style="text-align: left;">{{ new.text|censor|truncatewords:20 }}</p>
-                </li>
-                {% endfor %}
-            </ul>
-
-            {# Добавляю пагинацию на страницу #}
-
-            {# Информация о предыдущих страницах #}
-            {% if page_obj.has_previous %}
-                {# Для каждой ссылки пагинации указываем обработку через новый тег #}
-                <a href="?{% url_replace page=1 %}">1</a>
-                {% if page_obj.previous_page_number != 1 %}
-                    ...
-                    <a href="?{% url_replace page=page_obj.previous_page_number %}">{{ page_obj.previous_page_number }}</a>
-                {% endif %}
-            {% endif %}
-
-            {# Информация о текущей странице #}
-            {{ page_obj.number }}
-
-            {# Информация о следующих страницах #}
-            {% if page_obj.has_next %}
-                <a href="?{% url_replace page=page_obj.next_page_number %}">{{ page_obj.next_page_number }}</a>
-                {% if paginator.num_pages != page_obj.next_page_number %}
-                    ...
-                    <a href="?{% url_replace page=page_obj.paginator.num_pages %}">{{ page_obj.paginator.num_pages }}</a>
-                {% endif %}
-            {% endif %}
-        {% else %}
-            <h2>Посты не найдены!</h2>
-        {% endif %}
+        {% include "content.html" %}
     {% endif %}
 
 {% endblock content %}

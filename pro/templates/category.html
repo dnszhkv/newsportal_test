@@ -1,0 +1,22 @@
+<!--  Наследуюсь от шаблона default.html, который создаю для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+{% block content %}
+    {% if category.id %}
+    <div class="subscribe">
+        <em>
+            Подписаться на
+            <strong>{{category}}?</strong>
+        </em>
+
+        <a href="{#% url 'news:subscribe' category.id %#}" class="button
+        button-outline">
+            Подписаться
+        </a>
+    </div>
+
+    {% include "content.html" %}
+
+    {% endif %}
+
+{% endblock content %}
