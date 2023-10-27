@@ -2,21 +2,25 @@
 {% extends 'flatpages/default.html' %}
 
 {% block content %}
+    <h2>Постов в данном разделе: {{paginator.count}}</h2>
     {% if category.id %}
     <div class="subscribe">
         <em>
             Подписаться на
-            <strong>{{category}}?</strong>
+            <strong>{{category}}</strong>?
         </em>
 
-        <a href="{#% url 'news:subscribe' category.id %#}" class="button
-        button-outline">
+        <a href="{% url 'subscribe' category.id %}">
+            <button class="button-xsmall pure-botton button-wrning">
+                    <i class="bi bi-bookmark-plus"></i>
             Подписаться
+            </button>
         </a>
     </div>
 
-    {% include "content.html" %}
-
     {% endif %}
+
+    <hr>
+    {% include "content.html" %}
 
 {% endblock content %}

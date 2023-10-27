@@ -1,10 +1,12 @@
 # Импортирую класс, который говорит о том, что в этом представлении будет выводиться список объектов из БД
+from django.conf.global_settings import DEFAULT_FROM_EMAIL
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, resolve
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 from .models import Post, Category
 from .filters import PostFilter
@@ -80,10 +82,12 @@ class PostCategory(ListView):
         return context
 
 
+@login_required
 def subscribe_to_category(request, pk):
     user = request.user
     category = Category.objects.get(id=pk)
-    if not category.subscribes.filter(id=user.id).exists():
+
+    if not category.subscribers.filter(id=user.id).exists():
         category.subscribers.add(user)
         email = user.email
         html = render_to_string(
@@ -97,7 +101,7 @@ def subscribe_to_category(request, pk):
         msg = EmailMultiAlternatives(
             subject=f'Подписка на категорию: {category}',
             body='',
-            from_email='peterbadson@yandex.ru',
+            from_email=DEFAULT_FROM_EMAIL,
             to=[email, ],  # это то же, что и recipients_list
         )
         msg.attach_alternative(html, "text/html")  # добавляем html
@@ -106,12 +110,27 @@ def subscribe_to_category(request, pk):
             msg.send()  # отсылаем
         except Exception as e:
             print(e)
-        return redirect('index')
+        return redirect('account_info')
 
-    return redirect('index')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 
-# def unsubscribe_from_category(request, pk):
+@login_required
+def unsubscribe_from_category(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+
+    if category.subscribers.filter(id=user.id).exists():
+        category.subscribers.remove(user)
+        return redirect('account_info')
+        email = user.email
+        html = render_to_string(
+            'mail/subscribed.html',
+            {
+                'category': category,
+                'user': user,
+            }
+        )
 
 
 # Создание новости

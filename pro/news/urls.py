@@ -2,8 +2,7 @@ from django.urls import path
 from django.contrib.auth.views import LoginView
 # Импортирую представления
 from .views import (PostList, PostDetail, PostSearch, NewCreate, NewUpdate, NewDelete, PostCategory,
-                    subscribe_to_category, )
-                    # unsubscribe_from_category)
+                    subscribe_to_category, unsubscribe_from_category)
 
 
 urlpatterns = [
@@ -18,5 +17,5 @@ urlpatterns = [
    path('<int:pk>/delete/', NewDelete.as_view(), name='new_delete'),
    path('category/<int:pk>/', PostCategory.as_view(), name='category'),
    path('subscribe/<int:pk>/', subscribe_to_category, name='subscribe'),
-   # path('unsubscribe/<int:pk>/', unsubscribe_from_category, name='unsubscribe'),
+   path('unsubscribe/<int:pk>/', unsubscribe_from_category, name='unsubscribe'),
 ]

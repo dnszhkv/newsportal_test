@@ -4,8 +4,33 @@
 <h2>Страница авторизованного пользователя {{request.user.username}}</h2>
 <div> "Персональная информация пользователя {{request.user.username}}" </div>
 
-<button> <a href="accounts/logout/">Выйти</a> </button>
 {% if is_not_author %}
     <button> <a href="upgrade/">Стать автором</a> </button>
 {% endif %}
+
+<div>
+    Подписки:
+    {% if categories %}
+    <ul>
+
+        {% for category in categories %}
+
+        <li>
+            {{category.get_category}}
+            <a href="{% url 'unsubscribe' category.id %}">
+                <button class="button-xsmall pure-botton button-wrning">
+                    <i class="bi bi-bookmark-plus"></i>
+                    Отписаться
+                </button>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    нет подписок
+    {% endif %}
+</div>
+
+<button> <a href="accounts/logout/">Выйти</a> </button>
+
 {% endblock %}
