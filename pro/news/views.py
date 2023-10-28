@@ -1,17 +1,18 @@
 # Импортирую класс, который говорит о том, что в этом представлении будет выводиться список объектов из БД
-from django.conf.global_settings import DEFAULT_FROM_EMAIL
-from django.core.mail import EmailMultiAlternatives
-from django.shortcuts import redirect
-from django.template.loader import render_to_string
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy, resolve
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required
+from django.core.mail import EmailMultiAlternatives
+from django.shortcuts import redirect
+from django.template.loader import render_to_string
+from django.conf import settings
 
 from .models import Post, Category
 from .filters import PostFilter
 from .forms import PostForm
 
+DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 class PostList(ListView):
     # Указываю модель, объекты которой буду выводить
@@ -100,7 +101,7 @@ def subscribe_to_category(request, pk):
 
         msg = EmailMultiAlternatives(
             subject=f'Подписка на категорию: {category}',
-            body='',
+            body=f'Вы успешно подписались на рассылку постов в категории {category}',
             from_email=DEFAULT_FROM_EMAIL,
             to=[email, ],  # это то же, что и recipients_list
         )

@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.flatpages',
     'django_filters',
     'news',
+    'accounts',
+    # подключаю приложения allauth
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -75,7 +77,6 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -96,7 +97,6 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'none'
 
 ACCOUNT_FORMS = {'signup': 'accounts.forms.CommonSignupForm'}
 
