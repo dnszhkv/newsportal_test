@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.conf import settings
 
-from .models import Post, Category
+from .models import Post, Category, Author
 from .filters import PostFilter
 from .forms import PostForm
 
@@ -67,8 +67,8 @@ class PostCategory(ListView):
 
     def get_queryset(self):
         self.id = resolve(self.request.path_info).kwargs['pk']
-        c = Category.objects.get(id=self.id)
-        queryset = Post.objects.filter(category=c)
+        category = Category.objects.get(id=self.id)
+        queryset = Post.objects.filter(category=category)
         return queryset
 
     def get_context_data(self, **kwargs):
@@ -141,6 +141,8 @@ class NewCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.type = 'NE'
+        post.author = Author.objects.get(user=self.request.user)
+        post.save()
         return super().form_valid(form)
 
 
@@ -186,6 +188,8 @@ class ArticleCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         post = form.save(commit=False)
         post.type = 'AR'
+        post.author = Author.objects.get(user=self.request.user)
+        post.save()
         return super().form_valid(form)
 
 

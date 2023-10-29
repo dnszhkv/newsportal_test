@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.contrib.auth.models import Group
 from django.contrib.auth.decorators import login_required
-from news.models import Category
+from news.models import Author, Category
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -23,4 +23,7 @@ def upgrade_me(request):
     authors_group = Group.objects.get(name='authors')
     if not request.user.groups.filter(name='authors').exists():
         authors_group.user_set.add(user)
+        # Создаю объект модели Author, связанный с пользователем
+        author = Author.objects.create(name=user.username, user=user)
+        author.save()
     return redirect('account_info')
