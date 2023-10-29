@@ -12,7 +12,6 @@ from .models import Post, Category
 from .filters import PostFilter
 from .forms import PostForm
 
-DEFAULT_FROM_EMAIL = settings.DEFAULT_FROM_EMAIL
 
 class PostList(ListView):
     # Указываю модель, объекты которой буду выводить
@@ -100,15 +99,15 @@ def subscribe_to_category(request, pk):
         )
 
         msg = EmailMultiAlternatives(
-            subject=f'Подписка на категорию: {category}',
-            body=f'Вы успешно подписались на рассылку постов в категории {category}',
-            from_email=DEFAULT_FROM_EMAIL,
-            to=[email, ],  # это то же, что и recipients_list
+            subject='News Portal Ultimate! Подписка на категорию',
+            body='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[email, ],
         )
-        msg.attach_alternative(html, "text/html")  # добавляем html
+        msg.attach_alternative(html, "text/html")
 
         try:
-            msg.send()  # отсылаем
+            msg.send()
         except Exception as e:
             print(e)
         return redirect('account_info')
@@ -124,14 +123,6 @@ def unsubscribe_from_category(request, pk):
     if category.subscribers.filter(id=user.id).exists():
         category.subscribers.remove(user)
         return redirect('account_info')
-        email = user.email
-        html = render_to_string(
-            'mail/subscribed.html',
-            {
-                'category': category,
-                'user': user,
-            }
-        )
 
 
 # Создание новости

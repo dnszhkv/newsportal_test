@@ -2,9 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Подписка на категорию</title>
 </head>
 <body>
-
+    {% load account %}
+    <h1>Здравствуйте, <strong>{{user.username}}!</strong>!</h1>
+    <p>Вы успешно подписались на категорию "{{category}}".</p>
 </body>
 </html>

@@ -21,6 +21,20 @@ New
         <a href="{% url 'category' c.id %}" class="category">{{c.name}}</a>
         {% endfor %}
     </p>
+    <p style="text-align: left;" class="buttons">
+        <a href="{% url new.type|add:'_edit' pk=new.pk %}">
+            <button class="button-xsmall pure-botton button-wrning">
+                <i class="bi bi-bookmark-plus"></i>
+                Редактировать
+            </button>
+        </a>
+        <a href="{% url new.type|add:'_delete' new.pk %}">
+            <button class="button-xsmall pure-botton button-wrning">
+                <i class="bi bi-bookmark-plus"></i>
+                Удалить
+            </button>
+        </a>
+    </p>
 
     <hr>
     {% if new %}
