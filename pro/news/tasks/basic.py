@@ -11,15 +11,14 @@ def get_subscribers(category):
 
 
 def new_post_subscription(instance):
-    template = 'mail/new_post.html'
 
     for category in instance.category.all():
-        email_subject = f'{instance.title}'
+        email_subject = 'News Portal Ultimate! Новый пост в твоём любимом разделе!'
         user_emails = get_subscribers(category)
 
         html = render_to_string(
-            template_name=template,
-            context={
+            'mail/new_post.html',
+            {
                 'category': category,
                 'post': instance,
             }

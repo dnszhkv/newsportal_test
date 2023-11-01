@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Новый пост</title>
 </head>
 <body>
-    <h1>Здравствуй, {{user.username}}. Новый пост в твоём любимом разделе!</h1>
-    <a href="{% url 'new' post.id %}">
+    <a href="http://127.0.0.1:8000{% url 'new' post.id %}">
         <h2>{{post.title}}</h2>
     </a>
     <p>{{post.text|truncatewords:50}}</p>

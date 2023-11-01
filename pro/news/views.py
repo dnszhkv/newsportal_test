@@ -110,9 +110,9 @@ def subscribe_to_category(request, pk):
             msg.send()
         except Exception as e:
             print(e)
-        return redirect('account_info')
+        return redirect(request.META.get('HTTP_REFERER'))
 
-    return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('account_info')
 
 
 @login_required

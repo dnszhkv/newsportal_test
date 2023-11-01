@@ -22,4 +22,5 @@ class PostFilter(FilterSet):
         field_name='time_in',
         lookup_expr='gt',
         label='Опубликовано после:',
-        widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+        widget=forms.widgets.DateInput(attrs={'type': 'date'})
+    )
