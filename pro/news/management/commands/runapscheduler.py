@@ -6,24 +6,19 @@ from apscheduler.triggers.cron import CronTrigger
 from django.core.management.base import BaseCommand
 from django.core.mail import send_mail
 from news.models import Category, Post
-from news.tasks import get_subscribers
+from news.tasks.basic import get_subscribers
 
 logger = logging.getLogger(__name__)
 
 
 def send_weekly_digest():
-    # Получаю текущую дату
-    current_date = datetime.now()
-
     # Вычисляю начальную и конечную даты для недельного периода
-    end_date = current_date
+    current_date = datetime.now()
     start_date = current_date - timedelta(days=7)
 
-    # Получаю все категории
-    categories = Category.objects.all()
-
-    for category in categories:
-        posts = Post.objects.filter(category=category, time_in__range=(start_date, end_date))
+    # Получаю все категории и прохожусь по каждой
+    for category in Category.objects.all():
+        posts = Post.objects.filter(category=category, time_in__range=(start_date, current_date))
         if posts:
             # Получаю пользователей, подписанных на категорию
             subscribers = get_subscribers(category)
