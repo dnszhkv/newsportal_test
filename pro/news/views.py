@@ -7,6 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.conf import settings
+from django.core.cache import cache
 
 from .models import Post, Category, Author
 from .filters import PostFilter
@@ -190,6 +191,9 @@ class ArticleCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         post.type = 'AR'
         post.author = Author.objects.get(user=self.request.user)
         post.save()
+        # Сохранение статьи в кеш
+        cache_key = f'article_{post.id}'  # Уникальный ключ для кеширования
+        cache.set(cache_key, post)  # Сохранение статью в кеш
         return super().form_valid(form)
 
 
@@ -211,6 +215,16 @@ class ArticleUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
         post.type = 'AR'
         return super().form_valid(form)
 
+    def get_object(self, queryset=None):
+        post = super().get_object(queryset)
+        if post.type == 'AR':
+            # Попытка получения статью из кеша
+            cache_key = f'article_{post.id}'
+            cached_post = cache.get(cache_key)
+            if cached_post is not None:
+                return cached_post
+        return post
+
 
 # Удаление статьи
 class ArticleDelete(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
@@ -223,3 +237,11 @@ class ArticleDelete(PermissionRequiredMixin, LoginRequiredMixin, DeleteView):
         if post.type == 'AR':
             return ['article_delete.html']
         return super().get_template_names()
+
+    def delete(self, request, *args, **kwargs):
+        post = self.get_object()
+        if post.type == 'AR':
+            # Удаление статью из кеша
+            cache_key = f'article_{post.id}'
+            cache.delete(cache_key)
+        return super().delete(request, *args, **kwargs)

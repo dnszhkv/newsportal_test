@@ -44,7 +44,7 @@ class Author(models.Model):
         return self.name
 
 
-# Модель Category представляет собой категории постов
+# Модель Category - категории постов
 class Category(models.Model):
     name = models.CharField(unique=True, max_length=255)  # Уникальное имя категории
     subscribers = models.ManyToManyField(User, blank=True)
@@ -60,7 +60,7 @@ class Category(models.Model):
         return self.name
 
 
-# Модель Post представляет собой посты (статьи и новости)
+# Модель Post - посты (статьи и новости)
 class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE)  # Связь с моделью Author
     time_in = models.DateTimeField(auto_now_add=True)  # Дата и время создания поста
@@ -89,13 +89,13 @@ class Post(models.Model):
         return self.title
 
 
-# Модель PostCategory представляет связь между постами и категориями
+# Модель PostCategory - связь между постами и категориями
 class PostCategory(models.Model):
     post = models.ForeignKey('Post', on_delete=models.CASCADE)  # Связь с моделью Post
     category = models.ForeignKey('Category', on_delete=models.CASCADE)  # Связь с моделью Category
 
 
-# Модель Comment представляет собой комментарии к постам
+# Модель Comment - комментарии к постам
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)  # Связь с моделью Post
     user = models.ForeignKey(User, on_delete=models.CASCADE)  # Связь с моделью User
