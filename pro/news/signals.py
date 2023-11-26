@@ -26,4 +26,4 @@ def validate_post_count(sender, instance, **kwargs):
 
     # Если количество постов автора превышает 3, всплывает ошибку валидации
     if post_count >= 3:
-        raise ValidationError('Вы не можете публиковать более трех новостей в сутки!')
+        raise ValidationError('Вы не можете публиковать более трёх постов в сутки!')
