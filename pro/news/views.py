@@ -193,7 +193,7 @@ class ArticleCreate(PermissionRequiredMixin, LoginRequiredMixin, CreateView):
         post.save()
         # Сохранение статьи в кеш
         cache_key = f'article_{post.id}'  # Уникальный ключ для кеширования
-        cache.set(cache_key, post)  # Сохранение статью в кеш
+        cache.set(cache_key, post)  # Сохранение в кеш
         return super().form_valid(form)
 
 
@@ -218,7 +218,7 @@ class ArticleUpdate(PermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     def get_object(self, queryset=None):
         post = super().get_object(queryset)
         if post.type == 'AR':
-            # Попытка получения статью из кеша
+            # Попытка получения статьи из кеша
             cache_key = f'article_{post.id}'
             cached_post = cache.get(cache_key)
             if cached_post is not None:
