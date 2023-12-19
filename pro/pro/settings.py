@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 import os
+import sys
+import logging
 from pathlib import Path
 from decouple import config
 
@@ -148,7 +150,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = 'static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -159,6 +161,8 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 
 
 DEBUG = True
+
+# Настройки для отправки почты
 EMAIL_USE_SSL = False
 EMAIL_USE_TLS = True
 EMAIL_HOST = config('EMAIL_HOST')
@@ -166,6 +170,7 @@ EMAIL_PORT = config('EMAIL_PORT')
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
+ADMINS = config('ADMINS')
 
 APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
@@ -189,3 +194,99 @@ CACHES = {
         'LOCATION': os.path.join(BASE_DIR, 'cache_files'), # Кэшируемые файлы сохраняются в созданную папку cache_files
     }
 }
+
+
+# Логирование
+LOGGING_DIR = os.path.join(BASE_DIR, 'logs')
+if not os.path.exists(LOGGING_DIR):
+    os.makedirs(LOGGING_DIR)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file_general': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'general.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'file_errors': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'errors.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'file_security': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(LOGGING_DIR, 'security.log'),
+            'maxBytes': 1024 * 1024 * 5,  # 5 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'file_general'],
+            'level': 'DEBUG',
+        },
+        'django.request': {
+            'handlers': ['mail_admins', 'file_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.server': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.template': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.db.backends': {
+            'handlers': ['file_errors'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['file_security'],
+            'level': 'INFO',
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file_general'],
+        'level': 'DEBUG',
+    },
+}
+
+
+if not config('DEBUG', default=False, cast=bool):
+    # Отправка сообщений только при DEBUG=False
+    LOGGING['handlers']['console']['level'] = 'ERROR'
+    LOGGING['handlers']['file_general']['level'] = 'ERROR'
+else:
+    # Отправка сообщений в консоль при DEBUG=True
+    LOGGING['handlers']['mail_admins'] = {
+        'level': 'ERROR',
+        'class': 'django.utils.log.AdminEmailHandler',
+        'formatter': 'verbose',
+    }
